@@ -3,3 +3,5 @@
 // argumento
 // • devuelva un array con los elementos hasta el primer callback que devolvió false
 // • (Inverso del dropWhile)
+
+
