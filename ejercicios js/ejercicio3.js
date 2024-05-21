@@ -27,6 +27,6 @@ const operacion = (x) => {
   return x * 2;
 };
 
-let resultado = arreglo.map(operacion);
+let resultado = arreglo.map(operacion);  //crea un nuevo array
 console.table(resultado);
 
