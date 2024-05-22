@@ -15,15 +15,41 @@
 // ---------------------------------------------------------------
 
 
-let array = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+// let array = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-const operacion = (x) => {
-  return x > 4;
-}
+// const operacion = (x) => {
+//   return x > 4;
+// }
 
-let resultado = array.dropWhile(operacion)   // PENDIENTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-//busca los elementos que esten despues que la condicion que buscamos se cumple
-console.table(resultado);
+// let resultado = array.dropWhile(operacion)   // PENDIENTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+// //busca los elementos que esten despues que la condicion que buscamos se cumple
+// console.table(resultado);
+
+
+
+Array.prototype.dropWhile = function(callback) {
+  const result = [];
+  let dropping = true;
+  
+  for (const element of this) {
+    if (!callback(element) && dropping) {
+      dropping = false;
+    }
+    
+    if (!dropping) {
+      result.push(element);
+    }
+  }
+  
+  return result;
+};
+
+// Ejemplos de uso:
+const array1 = [1, 2, 3, 4, 5, 6];
+const resultado1 = array1.dropWhile((value) => value < 4);
+console.log(resultado1); // Salida esperada: [4, 5, 6]
+
+// el dropWhile elimina los datos que no cumplen la condicion tomando solo los que si la cumplen
 
 
 
