@@ -3,7 +3,7 @@
 // mostrar solo los nombres que comiencen con "A").
 
 // Función para cargar y filtrar datos JSON
-function loadAndFilterJSON() {
+function cargar() {
     // Realiza la llamada al archivo JSON local
     fetch('ejercicio18_1.json')
         .then(response => {
@@ -12,7 +12,8 @@ function loadAndFilterJSON() {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             // Convierte la respuesta a JSON
-            return response.json();
+          return response.json();
+          
         })
         .then(data => {
             // Filtra los datos para mostrar solo los nombres que comiencen con "A"
@@ -27,4 +28,4 @@ function loadAndFilterJSON() {
 }
 
 // Llama a la función para cargar y filtrar los datos JSON
-loadAndFilterJSON();
+cargar();
