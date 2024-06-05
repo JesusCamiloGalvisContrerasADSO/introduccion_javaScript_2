@@ -10,91 +10,176 @@
 // • Para todos los atributos no se puede ingresar espacios en blanco tanto al inicio como
 // al final de estos y se debe mostrar el error personalizado por consola
 
-
 // Función para validar y limpiar valores
-function validateAndClean(value, type) {
-    // Eliminar espacios en blanco al inicio y al final
-    value = value.trim();
+function validarYLimpiar(valor, tipo) {
+  // Eliminar espacios en blanco al inicio y al final
+  valor = valor.trim();
 
-    switch (type) {
-        case 'numeric':
-            if (!/^\d+$/.test(value)) {
-                throw new Error(`Invalid value '${value}' for numeric type`);
-            }
-            return value;
-        case 'alphanumeric':
-            if (!/^[a-zA-Z]+$/.test(value)) {
-                throw new Error(`Invalid value '${value}' for alphanumeric type`);
-            }
-            return value;
-        case 'email':
-            // Expresión regular simple para validar correo electrónico
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(value)) {
-                throw new Error(`Invalid value '${value}' for email type`);
-            }
-            return value;
-        case 'date':
-            // Validar que sea una fecha en formato ISO (YYYY-MM-DD)
-            if (isNaN(Date.parse(value))) {
-                throw new Error(`Invalid value '${value}' for date type`);
-            }
-            return value;
-        default:
-            throw new Error(`Unknown type '${type}'`);
-    }
+  switch (tipo) {
+    case "numérico":
+      if (!/^\d+$/.test(valor)) {
+        throw new Error(`Valor inválido '${valor}' para el tipo numérico`);
+      }
+      return valor;
+    case "alfanumérico":
+      if (!/^[a-zA-Z]+$/.test(valor)) {
+        throw new Error(`Valor inválido '${valor}' para el tipo alfanumérico`);
+      }
+      return valor;
+    case "correo":
+      // Expresión regular simple para validar correo electrónico
+      const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!correoRegex.test(valor)) {
+        throw new Error(`Valor inválido '${valor}' para el tipo correo`);
+      }
+      return valor;
+    case "fecha":
+      // Validar que sea una fecha en formato ISO (YYYY-MM-DD)
+      if (isNaN(Date.parse(valor))) {
+        throw new Error(`Valor inválido '${valor}' para el tipo fecha`);
+      }
+      return valor;
+    default:
+      throw new Error(`Tipo desconocido '${tipo}'`);
+  }
 }
 
 // Objeto objetivo
-let target = {};
+let objetivo = {};
 
 // Definir tipos de atributos
-let types = {
-    age: 'numeric',
-    name: 'alphanumeric',
-    email: 'email',
-    birthdate: 'date'
+let tipos = {
+  edad: "numérico",
+  nombre: "alfanumérico",
+  correo: "correo",
+  fechaNacimiento: "fecha",
 };
 
 // Manejador con trampa para la operación de escritura
-let handler = {
-    set: function(target, prop, value, receiver) {
-        if (types[prop]) {
-            try {
-                value = validateAndClean(value, types[prop]);
-            } catch (error) {
-                console.error(error.message);
-                return false;
-            }
-        } else {
-            // Eliminar espacios en blanco para otros atributos no especificados
-            value = value.trim();
-        }
-
-        target[prop] = value;
-        return true; // Indica que la operación de escritura fue exitosa
+let manejador = {
+  set: function (objetivo, propiedad, valor, receptor) {
+    if (tipos[propiedad]) {
+      try {
+        valor = validarYLimpiar(valor, tipos[propiedad]);
+      } catch (error) {
+        console.error(error.message);
+        return false;
+      }
+    } else {
+      // Eliminar espacios en blanco para otros atributos no especificados
+      valor = valor.trim();
     }
+
+    objetivo[propiedad] = valor;
+    return true; // Indica que la operación de escritura fue exitosa
+  },
 };
 
 // Crear el objeto proxy
-let proxy = new Proxy(target, handler);
+let proxy = new Proxy(objetivo, manejador);
 
 // Probar el objeto proxy
 try {
-    proxy.age = ' 30 ';
-    console.log(proxy.age); // 30
-    proxy.name = ' JohnDoe ';
-    console.log(proxy.name); // JohnDoe
-    proxy.email = ' test@example.com ';
-    console.log(proxy.email); // test@example.com
-    proxy.birthdate = ' 1990-01-01 ';
-    console.log(proxy.birthdate); // 1990-01-01
+  proxy.edad = " 30 ";
+  console.log(proxy.edad); // 30
+  proxy.nombre = " JuanPerez ";
+  console.log(proxy.nombre); // JuanPerez
+  proxy.correo = " prueba@ejemplo.com ";
+  console.log(proxy.correo); // prueba@ejemplo.com
+  proxy.fechaNacimiento = " 1990-01-01 ";
+  console.log(proxy.fechaNacimiento); // 1990-01-01
 
-    // Probar valores inválidos
-    proxy.age = 'thirty'; // Error: Invalid value 'thirty' for numeric type
-    proxy.name = 'John123'; // Error: Invalid value 'John123' for alphanumeric type
-    proxy.email = 'invalid-email'; // Error: Invalid value 'invalid-email' for email type
-    proxy.birthdate = '01-01-1990'; // Error: Invalid value '01-01-1990' for date type
+  // Probar valores inválidos
+  proxy.edad = "treinta"; // Error: Valor inválido 'treinta' para el tipo numérico
+  proxy.nombre = "Juan123"; // Error: Valor inválido 'Juan123' para el tipo alfanumérico
+  proxy.correo = "correo-inválido"; // Error: Valor inválido 'correo-inválido' para el tipo correo
+  proxy.fechaNacimiento = "01-01-1990"; // Error: Valor inválido '01-01-1990' para el tipo fecha
 } catch (e) {
-    console.error(e.message);
+  console.error(e.message);
 }
+
+// ----------------
+
+// function validateValue(key, value, type) {
+//     if (typeof value === 'string') {
+//         value = value.trim();
+//     }
+
+//     switch (type) {
+//         case 'numeric':
+//             if (isNaN(value)) {
+//                 throw new Error(${key} must be a number);
+//             }
+//             break;
+//         case 'alphanumeric':
+//             if (!/^[a-zA-Z]+$/.test(value)) {
+//                 throw new Error(${key} must contain only letters);
+//             }
+//             break;
+//         case 'email':
+//             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+//                 throw new Error(${key} must be a valid email address);
+//             }
+//             break;
+//         case 'date':
+//             if (isNaN(Date.parse(value))) {
+//                 throw new Error(${key} must be a valid date);
+//             }
+//             break;
+//         default:
+//             throw new Error(Unknown type for ${key});
+//     }
+
+//     return value;
+// }
+
+// function createValidatedObject(schema) {
+//     return new Proxy({}, {
+//         set(target, key, value) {
+//             if (schema[key]) {
+//                 value = validateValue(key, value, schema[key]);
+//             }
+//             target[key] = value;
+//             return true;
+//         }
+//     });
+// }
+
+// const schema = {
+//     age: 'numeric',
+//     name: 'alphanumeric',
+//     email: 'email',
+//     birthday: 'date'
+// };
+
+// const validatedObject = createValidatedObject(schema);
+
+// try {
+//     validatedObject.age = 25; // Correct
+//     validatedObject.name = 'JohnDoe'; // Correct
+//     validatedObject.email = 'john.doe@example.com'; // Correct
+//     validatedObject.birthday = '1990-01-01'; // Correct
+//     console.log(validatedObject);
+
+//     validatedObject.age = 'twenty'; // Error
+// } catch (e) {
+//     console.error(e.message);
+// }
+
+// try {
+//     validatedObject.name = 'John Doe'; // Error
+// } catch (e) {
+//     console.error(e.message);
+// }
+
+// try {
+//     validatedObject.email = 'john.doe@example'; // Error
+// } catch (e) {
+//     console.error(e.message);
+// }
+
+// try {
+//     validatedObject.birthday = 'not-a-date'; // Error
+// } catch (e) {
+//     console.error(e.message);
+// }
